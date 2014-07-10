@@ -1,0 +1,145 @@
+#include <cstdlib>
+#include <iostream>
+#include <string>
+#include <time.h>
+
+using namespace std;
+
+char * now() {
+  time_t rawtime;
+  time(&rawtime);
+  return ctime (&rawtime);
+}
+
+
+
+#include <iostream>
+using namespace std;
+
+
+enum State {
+    END_STATE,
+    OFF_DUTY_STATE,
+    ON_DUTY_MOVING_STATE,
+    ON_DUTY_STATIONARY_STATE,
+};
+
+
+enum Event {
+    INVALID_EVENT,
+    END_EVENT,
+    OFF_DUTY_EVENT,
+    ON_DUTY_EVENT,
+    START_EVENT,
+    STOP_EVENT,
+};
+
+
+Event GetNextEvent();
+
+
+Event string_to_event(string event_string) {
+    if (event_string == "END") {
+        return END_EVENT;
+    }
+    if (event_string == "OFF_DUTY") {
+        return OFF_DUTY_EVENT;
+    }
+    if (event_string == "ON_DUTY") {
+        return ON_DUTY_EVENT;
+    }
+    if (event_string == "START") {
+        return START_EVENT;
+    }
+    if (event_string == "STOP") {
+        return STOP_EVENT;
+    }
+    return INVALID_EVENT;
+}
+
+
+int HOS(State initial_state) {
+
+
+    State state= initial_state;
+    Event event;
+    while (true) {
+        switch(state) {
+        case END_STATE:
+            event = GetNextEvent();
+            switch(event) {
+            default:
+                cerr << "invalid event in state END: " << event << endl;
+                return -1;
+             }
+            break;
+        case OFF_DUTY_STATE:
+  // code for OFF_DUTY_STATE
+            event = GetNextEvent();
+            switch(event) {
+            case END_EVENT:
+  cout << "th-th-that's all, folks." << endl;
+  exit(EXIT_SUCCESS);
+                state = END_STATE;
+                break;
+            case ON_DUTY_EVENT:
+  cout << "driver coming on duty " << now();
+
+                state = ON_DUTY_STATIONARY_STATE;
+                break;
+            default:
+                cerr << "invalid event in state OFF_DUTY: " << event << endl;
+                return -1;
+             }
+            break;
+        case ON_DUTY_MOVING_STATE:
+  cout << "driver is moving" << endl;
+           event = GetNextEvent();
+            switch(event) {
+           case STOP_EVENT:
+
+                state = ON_DUTY_STATIONARY_STATE;
+                break;
+            default:
+                cerr << "invalid event in state ON_DUTY_MOVING: " << event << endl;
+                return -1;
+             }
+            break;
+        case ON_DUTY_STATIONARY_STATE:
+  cout << "driver is stationary" << endl;
+            event = GetNextEvent();
+            switch(event) {
+           case OFF_DUTY_EVENT:
+  cout << "driver coming off duty " << now();
+                state = OFF_DUTY_STATE;
+                break;
+            case START_EVENT:
+
+                state = ON_DUTY_MOVING_STATE;
+                break;
+            default:
+                cerr << "invalid event in state ON_DUTY_STATIONARY: " << event << endl;
+                return -1;
+             }
+            break;
+        default:
+            cerr << "INVALID STATE " << state << endl;
+            return -1;
+        }
+    }
+}
+	
+	
+
+
+Event GetNextEvent() {
+   string event_string;
+   cin >> event_string;
+   return string_to_event(event_string);
+}
+	
+	
+int main() {
+    int result = HOS(OFF_DUTY_STATE);
+    return result >= 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+}

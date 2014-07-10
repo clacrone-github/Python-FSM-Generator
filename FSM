@@ -1,0 +1,69 @@
+#include <cctype>
+#include <cstdlib>
+#include <iostream>
+	
+%machine vending_machine
+
+%state 0_cents_deposited
+//cout << "0 cents so far" << endl;
+%event Nickel 5_cents_deposited
+//cout << "deposited a nickel" << endl;
+%event Dime 10_cents_deposited
+//cout << "deposited a dime" << endl;
+
+%state 5_cents_deposited
+//cout << "5 cents so far" << endl;
+%event Nickel 10_cents_deposited
+//cout << "deposited a nickel" << endl;
+%event Dime 15_cents_deposited
+//cout << "deposited a dime" << endl;
+
+%state 10_cents_deposited
+//cout << "10 cents so far" << endl;
+%event Nickel 15_cents_deposited
+//cout << "deposited a nickel" << endl;
+%event Dime 20_or_more_cents_deposited
+//cout << "deposited a dime" << endl;
+
+%state 15_cents_deposited
+//cout << "15 cents so far" << endl;
+%event Nickel 20_or_more_cents_deposited
+//cout << "deposited a nickel" << endl;
+
+%state 20_or_more_cents_deposited
+//cout << "20 cents so far" << endl;
+%event Nickel 5_cents_Deposited
+//cout << "deposited a nickel" << endl;
+%event Dime 10_cents_deposited
+//cout << "deposited a dime" << endl;
+
+%end_machine
+
+
+Event GetNextEvent() {
+  int c;
+  while (isspace(c = cin.get())) {
+  }
+  if (c < 0) {
+     return END_OF_INPUT_EVENT;
+  }
+  if (isdigit(c)) {
+    return DIGIT_EVENT;
+  }
+  if (c == '+' || c == '-') {
+    return SIGN_EVENT;
+  }
+  if (c == '.') {
+    return DECIMAL_EVENT;
+  }
+  if ((c == 'e') || (c == 'E')) {
+    return EXPONENT_EVENT;
+  }
+  return INVALID_EVENT;
+};
+
+
+int main() {
+  int result = float_check(S0_STATE);
+  return result > 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+}

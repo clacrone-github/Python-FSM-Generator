@@ -1,0 +1,72 @@
+#include <cctype>
+#include <cstdlib>
+#include <iostream>
+	
+%machine float_check
+%state S0
+%event DIGIT S3
+%event SIGN S1
+%event DECIMAL S2
+
+%state S1
+%event DECIMAL S2
+%event DIGIT S3
+
+%state S2
+%event DIGIT S4
+
+%state S3
+%event DIGIT S3
+%event DECIMAL S4
+%event EXPONENT S5
+
+%state S4
+%event DIGIT S4
+%event EXPONENT S5
+%event END_OF_INPUT ACCEPT
+
+%state S5
+%event DIGIT S6
+%event SIGN S7
+
+%state S6
+%event DIGIT S6
+%event END_OF_INPUT ACCEPT
+
+%state S7
+%event DIGIT S6
+
+%state ACCEPT
+cout << "Input is valid float" << endl;
+return 1;
+
+%end_machine
+
+
+Event GetNextEvent() {
+  int c;
+  while (isspace(c = cin.get())) {
+  }
+  if (c < 0) {
+     return END_OF_INPUT_EVENT;
+  }
+  if (isdigit(c)) {
+    return DIGIT_EVENT;
+  }
+  if (c == '+' || c == '-') {
+    return SIGN_EVENT;
+  }
+  if (c == '.') {
+    return DECIMAL_EVENT;
+  }
+  if ((c == 'e') || (c == 'E')) {
+    return EXPONENT_EVENT;
+  }
+  return INVALID_EVENT;
+};
+
+
+int main() {
+  int result = float_check(S0_STATE);
+  return result > 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+}
