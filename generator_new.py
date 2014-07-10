@@ -1,8 +1,8 @@
 #! /usr/bin/python
-
-#Craig LaCrone
-#CSS 390 - Scripting
-#Assignment 4 - FSM Generator
+#
+# Craig LaCrone
+# CSS 390 - Scripting
+# Assignment 4 - FSM Generator
 
 import sys
 import fileinput
